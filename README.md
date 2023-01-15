@@ -6,5 +6,7 @@ Generates html for different slideshow types from provided image links.
 - Copy generated code and paste it in your html wherever you want the slideshow or lightbox button to show.
 
 
+-----
+
 Project by Hello Universe, LLC
 matt@hellouniverse.co
