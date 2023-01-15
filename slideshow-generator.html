@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<!-- Project by Hello Universe, LLC -->
+<!-- matt@hellouniverse.co -->
+
+<head>
+<meta charset="UTF-8">
+<title>Slideshow Generator</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<style>
+html, body {
+ 	position: relative;
+ 	float: left;
+ 	width: 100%;
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+
+#header-wrapper {
+  display: grid;
+  grid-gap: 60px;
+  grid-template-columns: repeat(2, max-content);
+  align-items: center;
+}
+
+h1 {
+  position: relative;
+  float: left;
+  margin: 0;
+  padding: 0;
+  font-weight: 100;
+}
+
+.full-width {
+  position: relative;
+  float: left;
+  width: 100%;
+}
+
+#page-wrapper {
+ 	position: relative;
+ 	width: 90vw;
+  max-width: 1000px;
+  margin: auto;
+  padding-top: 60px;
+}
+
+textarea {
+  width: 100%;
+  height: 50vh;
+  min-height: 250px;
+  box-sizing: border-box;
+}
+
+#slideshow-preview {
+  position: relative;
+  float: left;
+  width: 100%;
+  height: 60vh;
+  min-height: 300px;
+  margin-bottom: 50px;
+  box-sizing: border-box;
+  border: 1px solid #eee;
+}
+
+#generator-wrapper {
+ 	position: relative;
+ 	float: left;
+ 	width: 100%;
+  box-sizing: border-box;
+  margin-top: 30px;
+  margin-bottom: 250px;
+}
+
+.directions {
+  color: #444;
+  font-weight: 400;
+  font-size: 14px;
+  margin-bottom: 4px;
+  position: relative;
+  float: left;
+  width: 100%;
+}
+
+svg text {
+  font-family: arial, sans-serif;
+}
+
+#hu-input-prefix {
+  font-size: 20px;
+}
+
+#hu-generate-button-wrapper {
+  position: relative;
+  float: left;
+  width: 100%;
+  margin: 25px 0 10px;
+}
+
+#hu-generate-button {
+  padding: 6px 18px;
+  background-color: red;
+  color: #fff;
+  text-transform: uppercase;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 100;
+  border: none;
+  transition: all .2s ease;
+  -webkit-transition: all .2s ease;
+}
+
+#right-arrow {
+  opacity: 0;
+  transition: all .2s ease;
+  -webkit-transition: all .2s ease;
+}
+
+.tab {
+  display: none;
+  background-color: #fff;
+  padding: 0;
+  border-radius: 4px;
+  width: 100%;
+  height: 60vh;
+  min-height: 300px;
+}
+
+#generator-wrapper[data-tab="preview"] #preview-tab,
+#generator-wrapper[data-tab="image-links"] #image-links-tab,
+#generator-wrapper[data-tab="slideshow-code"] #slideshow-code-tab {
+  display: block;
+}
+
+#slideshow-buttons {
+  position: relative;
+  float: left;
+  display: grid;
+  grid-template-columns: repeat(3, max-content);
+}
+
+.slideshow-button {
+  cursor: pointer;
+  padding: 6px 15px;
+  background-color: #f7f7f7;
+}
+
+.slideshow-button:hover {
+  background-color: #eee;
+  /* color: #fff; */
+}
+
+#slideshow-buttons[data-tab="preview"] .slideshow-button[data-tab="preview"],
+#slideshow-buttons[data-tab="image-links"] .slideshow-button[data-tab="image-links"],
+#slideshow-buttons[data-tab="slideshow-code"] .slideshow-button[data-tab="slideshow-code"] {
+  background-color: #333;
+  color: #fff;
+  cursor: default;
+}
+
+#slideshow-type-selector-wrapper p {
+  margin: 0;
+}
+
+#slideshow-type-selector {
+  position: relative;
+  float: left;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+
+/*=============================*/
+/*======= MEDIA QUERIES =======*/
+/*=============================*/
+
+</style>
+</head>
+
+<body>
+
+<div id="page-wrapper">
+  
+  <div id="header-wrapper">
+    <h1>Slideshow Generator</h1>
+
+    <div id="slideshow-buttons" data-tab="preview">
+      <div data-tab="image-links" class="slideshow-button">
+        Images
+      </div>
+
+      <div data-tab="slideshow-code" class="slideshow-button">
+        Code
+      </div>
+
+      <div data-tab="preview" class="slideshow-button">
+        Preview
+      </div>
+    </div>
+  </div>
+
+
+  <div id="generator-wrapper" data-tab="preview">
+
+    <!-- SLIDESHOW TYPE -->
+    <div id="slideshow-type-selector-wrapper">
+      <p>Choose slideshow style</p>
+      <select id="slideshow-type-selector">
+        <option value="basic">Basic</option>
+        <option value="basic-with-lightbox">Basic with lightbox</option>
+        <option value="basic-with-thumbnails">Basic with thumnbails</option>
+        <option value="basic-with-thumbnails-and-lightbox">Basic with thumnbails and lightbox</option>
+        <option value="basic-lightbox-with-html-images">Basic lightbox with full size images</option>
+      </select>
+    </div>
+
+
+
+    <!-- IMAGE LINKS -->
+    <div id="image-links-tab" class="tab">
+      <strong>Image links</strong>
+      <br />
+      <span class="directions">Add the web links for your images here. One link per line.</span>
+      <br />
+      <textarea id="hu-slideshow-images" class="hu-no-wrap">
+https://images.unsplash.com/photo-1608080969021-dd6328f897ca
+https://images.unsplash.com/photo-1608143183071-537591e4bcf7
+https://images.unsplash.com/photo-1608228069492-3babaaba6f4c
+https://images.unsplash.com/photo-1608199756415-7dbf77fa6393
+https://images.unsplash.com/photo-1608227612117-0da7a226c539</textarea>
+    </div>
+    
+
+
+    <!-- PREVIEW -->
+    <div id="preview-tab" class="tab">
+      <div id="slideshow-preview"></div>
+    </div>
+
+
+    
+    <div id="slideshow-code-tab" class="tab">
+      <strong>Slideshow code</strong>
+      <br />
+      <span class="directions">copy the code and paste it into your html wherever you want the slideshow or lightbox button to show up.</span>
+      <br />
+      <textarea id="hu-slideshow-code"></textarea>
+    </div>
+  </div>
+
+</div><!-- end #page-wrapper -->
+
+<script>
+var basic = function(prefix,imageList) {
+  return `<style>
+  #${prefix}-slideshow-wrapper {
+    position: relative;
+    float: left;
+    width: 100%;
+    height: 100%;
+  }
+
+  #${prefix}-slideshow-wrapper h1 {
+    position: relative;
+    float: left;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,50%);
+    -webkit-transform: translate(-50%,-50%);
+    margin: 0;
+  }
+
+  #${prefix}-preloaded-images {
+    position: absolute;
+    height: 0;
+    overflow: hidden;
+  }
+  
+  #${prefix}-slideshow-image {
+    cursor: pointer;
+    position: relative;
+    float: left;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-image: url(${imageList[0]});
+  }
+
+  .${prefix}-slideshow-button {
+    z-index: 100;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    opacity: .9;
+    color: #444;
+    cursor: pointer;
+    font-size: 1.8rem;
+    font-weight: 900;
+    width: 45px;
+  }
+
+  .${prefix}-slideshow-button:hover {
+    opacity: 1;
+  }
+
+  .${prefix}-no-selection::selection {
+    background-color: transparent;
+  }
+
+  #${prefix}-slideshow-left-arrow-button {
+    left: -1px;
+  }
+
+  #${prefix}-slideshow-right-arrow-button {
+    right: -1px;
+  }
+  </style>
+
+
+  <div id="${prefix}-slideshow-wrapper">
+
+    <div id="${prefix}-preloaded-images"></div>
+    
+    <div id="${prefix}-slideshow-image" data-slide-number="0"></div>
+
+    <!-- left arrow button (SVG image) -->
+    <svg id="${prefix}-slideshow-left-arrow-button" class="${prefix}-slideshow-button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164 303.63"> <defs> <style> .cls-1 { opacity: 0.85; } .cls-2 { fill: #fff; } .cls-3 { fill: none; stroke: #555; stroke-linecap: round; stroke-linejoin: round; stroke-width: 7px; } </style> </defs> <g class="cls-1"> <rect class="cls-2" x="3" y="2.31" width="158" height="298" /> </g> <polyline class="cls-3" points="98 99.81 46 151.81 98 203.81" /> </svg>
+
+    <!-- right arrow button (SVG image) -->
+    <svg id="${prefix}-slideshow-right-arrow-button" class="${prefix}-slideshow-button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164 303.63"> <defs> <style> .cls-1 { opacity: 0.85; } .cls-2 { fill: #fff; } .cls-3 { fill: none; stroke: #555; stroke-linecap: round; stroke-linejoin: round; stroke-width: 7px; } </style> </defs> <g class="cls-1"> <rect class="cls-2" x="3" y="2.31" width="158" height="298" /> </g> <polyline class="cls-3" points="66 202.81 118 150.81 66 98.81" /> </svg>
+
+  </div>
+
+  <script id="${prefix}-slideshow-scripts">
+
+  var imageList = ${JSON.stringify(imageList)};
+  var preloadedImages = document.querySelector('#${prefix}-preloaded-images');
+  preloadedImages.innerHTML = '';
+  for ( [index,image] of imageList.entries() ) {
+    preloadedImages.innerHTML += '<img src="' + image + '" />';
+  }
+    
+  var ${prefix} = (function() {
+    var slideshowImage = document.querySelector('#${prefix}-slideshow-image');
+    var imageList = ${JSON.stringify(imageList)};
+    var slideshowLeftArrowButton = document.querySelector('#${prefix}-slideshow-left-arrow-button');
+    var slideshowRightArrowButton = document.querySelector('#${prefix}-slideshow-right-arrow-button');
+
+    return {
+      init: function() {
+        slideshowImage.addEventListener('click', function() { ${prefix}.paginateRight() });
+        slideshowRightArrowButton.addEventListener('click', function() { ${prefix}.paginateRight() });
+        slideshowLeftArrowButton.addEventListener('click', function() { ${prefix}.paginateLeft() });
+      },
+
+      paginateRight: function() {
+        currentImageNumber = slideshowImage.getAttribute('data-slide-number');
+        // if last slide go to first slide
+        if ( currentImageNumber == imageList.length - 1 ) {
+          slideshowImage.style.backgroundImage = "url(" + imageList[0] + ")";
+          slideshowImage.setAttribute('data-slide-number', 0);
+        } else {
+          slideshowImage.style.backgroundImage = "url(" + imageList[Number(currentImageNumber) + 1] + ")";
+          slideshowImage.setAttribute('data-slide-number', Number(currentImageNumber) + 1);
+        }
+      },
+
+      paginateLeft: function() {
+        currentImageNumber = slideshowImage.getAttribute('data-slide-number');
+        // if first slide go to last slide
+        if ( currentImageNumber == 0 ) {
+          slideshowImage.style.backgroundImage = "url(" + imageList[imageList.length - 1] + ")";
+          slideshowImage.setAttribute('data-slide-number', imageList.length - 1);
+        } else {
+          slideshowImage.style.backgroundImage = "url(" + imageList[Number(currentImageNumber) - 1] + ")";
+          slideshowImage.setAttribute('data-slide-number', Number(currentImageNumber) - 1);
+        }
+      }
+    };
+
+  })(); /* end ${prefix} */
+
+  ${prefix}.init();
+  <\/script>`;
+} /* end var basic */
+
+var basicWithThumbnails = function(prefix,imageList) {
+  return `<style>
+  #${prefix}-slideshow-outer-wrapper {
+    position: relative;
+    float: left;
+   	width: 100%;
+    height: 100%;
+  }
+
+  #${prefix}-slideshow-wrapper {
+    position: relative;
+    float: left;
+    width: 100%;
+    height: calc(100% - 101.25px);
+  }
+
+  #${prefix}-slideshow-wrapper h1 {
+    position: relative;
+    float: left;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,50%);
+    -webkit-transform: translate(-50%,-50%);
+    margin: 0;
+  }
+
+  #${prefix}-preloaded-images {
+    position: absolute;
+    height: 0;
+    overflow: hidden;
+  }
+  
+  #${prefix}-slideshow-image {
+    cursor: pointer;
+    position: relative;
+    float: left;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-image: url(${imageList[0]});
+  }
+
+  .${prefix}-slideshow-button {
+    z-index: 100;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    opacity: .9;
+    color: #444;
+    cursor: pointer;
+    font-size: 1.8rem;
+    font-weight: 900;
+    width: 45px;
+  }
+
+  .${prefix}-slideshow-button:hover {
+    opacity: 1;
+  }
+
+  .${prefix}-no-selection::selection {
+    background-color: transparent;
+  }
+
+  #${prefix}-slideshow-left-arrow-button {
+    left: -1px;
+  }
+
+  #${prefix}-slideshow-right-arrow-button {
+    right: -1px;
+  }
+
+  #${prefix}-thumbnails-wrapper {
+    position: relative;
+    float: left;
+    width: 100%;
+    height: 101.25px;
+    overflow-x: scroll;
+    background-color: #f9f9f9;
+  }
+
+  #${prefix}-thumbnails-inner-wrapper {
+    position: relative;
+    float: left;
+    height: 100%;
+  }
+
+  .${prefix}-slideshow-thumbnail {
+    position: relative;
+    float: left;
+    width: 180px;
+    height: 101.25px;
+    border-width: 0 4px 0 0;
+    border-style: solid;
+    border-color: #fff;
+    opacity: .9;
+    cursor: pointer;
+    transition: all .2s ease;
+    -webkit-transition: all .2s ease;
+    background-size: cover;
+    background-position: center;
+    box-sizing: border-box;
+  }
+
+  .${prefix}-slideshow-thumbnail:last-of-type {
+    border: none;
+  }
+
+  .${prefix}-slideshow-thumbnail:hover {
+    opacity: 1;
+  }
+  </style>
+
+
+  <div id="${prefix}-slideshow-outer-wrapper">
+    <div id="${prefix}-slideshow-wrapper">
+
+      <div id="${prefix}-preloaded-images"></div>
+      
+      <div id="${prefix}-slideshow-image" data-slide-number="0"></div>
+
+      <!-- left arrow button (SVG image) -->
+      <svg id="${prefix}-slideshow-left-arrow-button" class="${prefix}-slideshow-button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164 303.63"> <defs> <style> .cls-1 { opacity: 0.85; } .cls-2 { fill: #fff; } .cls-3 { fill: none; stroke: #555; stroke-linecap: round; stroke-linejoin: round; stroke-width: 7px; } </style> </defs> <g class="cls-1"> <rect class="cls-2" x="3" y="2.31" width="158" height="298" /> </g> <polyline class="cls-3" points="98 99.81 46 151.81 98 203.81" /> </svg>
+
+      <!-- right arrow button (SVG image) -->
+      <svg id="${prefix}-slideshow-right-arrow-button" class="${prefix}-slideshow-button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164 303.63"> <defs> <style> .cls-1 { opacity: 0.85; } .cls-2 { fill: #fff; } .cls-3 { fill: none; stroke: #555; stroke-linecap: round; stroke-linejoin: round; stroke-width: 7px; } </style> </defs> <g class="cls-1"> <rect class="cls-2" x="3" y="2.31" width="158" height="298" /> </g> <polyline class="cls-3" points="66 202.81 118 150.81 66 98.81" /> </svg>
+
+    </div>
+
+    <div id="${prefix}-thumbnails-wrapper">
+      <div id="${prefix}-thumbnails-inner-wrapper"></div>
+    </div>
+  </div>
+
+  <script id="${prefix}-slideshow-scripts">
+
+  var imageList = ${JSON.stringify(imageList)};
+  var preloadedImages = document.querySelector('#${prefix}-preloaded-images');
+  preloadedImages.innerHTML = '';
+  for ( [index,image] of imageList.entries() ) {
+    preloadedImages.innerHTML += '<img src="' + image + '" />';
+  }
+    
+  var ${prefix} = (function() {
+    var slideshowImage = document.querySelector('#${prefix}-slideshow-image');
+    var slideshowThumbnailsInnerWrapper = document.querySelector('#${prefix}-thumbnails-inner-wrapper');
+    var imageList = ${JSON.stringify(imageList)};
+
+    var generateThumbnail = function(index,image) {
+      return '<div class="${prefix}-slideshow-thumbnail" data-slide-number="' + index + '" style="background-image: url(' + image + ');"></div>'
+    }
+
+    slideshowThumbnailsInnerWrapper.style.width = (imageList.length * 180) + "px";
+
+    for ( [index,image] of imageList.entries() ) {
+      slideshowThumbnailsInnerWrapper.innerHTML += generateThumbnail(index,image);
+    }
+
+    var slideshowLeftArrowButton = document.querySelector('#${prefix}-slideshow-left-arrow-button');
+    var slideshowRightArrowButton = document.querySelector('#${prefix}-slideshow-right-arrow-button');
+
+    return {
+      init: function() {
+        slideshowImage.addEventListener('click', function() { ${prefix}.paginateRight() });
+
+        slideshowRightArrowButton.addEventListener('click', function() { ${prefix}.paginateRight() });
+
+        slideshowLeftArrowButton.addEventListener('click', function() { ${prefix}.paginateLeft() });
+
+        document.addEventListener('click', function(event) {
+          if ( event.target.matches('.${prefix}-slideshow-thumbnail') ) {
+            var imageNumber = event.target.getAttribute('data-slide-number');
+            ${prefix}.selectThumbnail(imageNumber);
+          }
+        });
+      },
+
+      paginateRight: function() {
+        currentImageNumber = slideshowImage.getAttribute('data-slide-number');
+        // if last slide go to first slide
+        if ( currentImageNumber == imageList.length - 1 ) {
+          slideshowImage.style.backgroundImage = "url(" + imageList[0] + ")";
+          slideshowImage.setAttribute('data-slide-number', 0);
+        } else {
+          slideshowImage.style.backgroundImage = "url(" + imageList[Number(currentImageNumber) + 1] + ")";
+          slideshowImage.setAttribute('data-slide-number', Number(currentImageNumber) + 1);
+        }
+      },
+
+      paginateLeft: function() {
+        currentImageNumber = slideshowImage.getAttribute('data-slide-number');
+        // if first slide go to last slide
+        if ( currentImageNumber == 0 ) {
+          slideshowImage.style.backgroundImage = "url(" + imageList[imageList.length - 1] + ")";
+          slideshowImage.setAttribute('data-slide-number', imageList.length - 1);
+        } else {
+          slideshowImage.style.backgroundImage = "url(" + imageList[Number(currentImageNumber) - 1] + ")";
+          slideshowImage.setAttribute('data-slide-number', Number(currentImageNumber) - 1);
+        }
+      },
+
+      selectThumbnail: function(imageNumber) {
+        slideshowImage.style.backgroundImage = "url(" + imageList[Number(imageNumber)] + ")";
+        slideshowImage.setAttribute('data-slide-number', imageNumber);
+      }
+    };
+
+  })(); /* end ${prefix} */
+
+  ${prefix}.init();
+  <\/script>`;
+} /* end var basicWithThumbnails */
+
+
+var basicWithLightbox = function(prefix,imageList) {
+  return `<style>
+    #${prefix}-lightbox-wrapper {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1000000000;
+    }
+
+    .${prefix}-hide-lightbox-wrapper {
+      display: none;
+    }
+
+    .${prefix}-show-lightbox-wrapper {
+      display: block;
+    }
+
+    #${prefix}-lightbox-background-fade {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.85);
+      cursor: pointer;
+    }
+
+    #${prefix}-slideshow-wrapper {
+      position: relative;
+      float: left;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      -webkit-transform: translate(-50%,-50%);
+      width: 85vw;
+      height: 85vh;
+      z-index: 100;
+      border: 3px solid #fff;
+      box-sizing: border-box;
+    }
+
+    #${prefix}-slideshow-wrapper h1 {
+      position: relative;
+      float: left;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,50%);
+      -webkit-transform: translate(-50%,-50%);
+      margin: 0;
+    }
+
+    #${prefix}-preloaded-images {
+      position: absolute;
+      height: 0;
+      overflow: hidden;
+    }
+    
+    #${prefix}-slideshow-image {
+      cursor: pointer;
+      position: relative;
+      float: left;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      background-image: url(${imageList[0]});
+    }
+
+    .${prefix}-slideshow-button {
+      z-index: 1000;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      -webkit-transform: translateY(-50%);
+      opacity: .9;
+      color: #444;
+      cursor: pointer;
+      font-size: 1.8rem;
+      font-weight: 900;
+      width: 45px;
+    }
+
+    .${prefix}-slideshow-button:hover {
+      opacity: 1;
+    }
+
+    .${prefix}-no-selection::selection {
+      background-color: transparent;
+    }
+
+    #${prefix}-slideshow-left-arrow-button {
+      left: -1px;
+    }
+
+    #${prefix}-slideshow-right-arrow-button {
+      right: -1px;
+    }
+
+    #${prefix}-lightbox-popup-button-wrapper {
+      position: relative;
+      float: left;
+      width: 100%;
+      text-align: center;
+    }
+
+    #${prefix}-lightbox-popup-button {
+      position: relative;
+      display: inline-block;
+      border-radius: 3px;
+      padding: 0 25px;
+      margin: 20px 0;
+      line-height: 26px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: system-ui, sans-serif;
+      border: 2px solid #444;
+      background-color: #fff;
+      color: #444;
+      cursor: pointer;
+      transition: all .2s ease;
+      -webkit-transition: all .2s ease;
+    }
+
+    #${prefix}-lightbox-popup-button:hover {
+      background-color: #444;
+      color: #fff;
+    }
+
+    #${prefix}-lightbox-close-button {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      width: 40px;
+      z-index: 1000;
+      cursor: pointer;
+      transition: all .4s ease;
+      -webkit-transition: all .4s ease;
+    }
+
+    .${prefix}-faded-close-button {
+      opacity: .3;
+    }
+
+    .${prefix}-highlighted-close-button {
+      opacity: 1;
+    }
+    </style>
+
+      <div id="${prefix}-lightbox-popup-button-wrapper">
+        <div id="${prefix}-lightbox-popup-button">lightbox button</div>
+      </div>
+
+      <div id="${prefix}-lightbox-wrapper" class="${prefix}-hide-lightbox-wrapper">
+        <div id="${prefix}-lightbox-background-fade"></div>
+
+        <!-- close lightbox button -->
+        <svg id="${prefix}-lightbox-close-button" class="${prefix}-faded-close-button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 377.19 373.73"> <defs> <style> .close-button-1 { fill: #fff; } .close-button-2 { fill: none; stroke: #444; stroke-linecap: round; stroke-miterlimit: 10; stroke-width: 10px; } </style> </defs> <circle class="close-button-1" cx="189.09" cy="186.37" r="179" /> <line class="close-button-2" x1="110.84" y1="108.37" x2="267.34" y2="264.87" /> <line class="close-button-2" x1="267.09" y1="108.37" x2="111.09" y2="264.37" /> </svg>
+
+        <div id="${prefix}-slideshow-wrapper">
+
+          <div id="${prefix}-preloaded-images"></div>
+          
+          <div id="${prefix}-slideshow-image" data-slide-number="0"></div>
+
+          <!-- left arrow button (SVG image) -->
+          <svg id="${prefix}-slideshow-left-arrow-button" class="${prefix}-slideshow-button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164 303.63"> <defs> <style> .cls-1 { opacity: 0.85; } .cls-2 { fill: #fff; } .cls-3 { fill: none; stroke: #555; stroke-linecap: round; stroke-linejoin: round; stroke-width: 7px; } </style> </defs> <g class="cls-1"> <rect class="cls-2" x="3" y="2.31" width="158" height="298" /> </g> <polyline class="cls-3" points="98 99.81 46 151.81 98 203.81" /> </svg>
+
+          <!-- right arrow button (SVG image) -->
+          <svg id="${prefix}-slideshow-right-arrow-button" class="${prefix}-slideshow-button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164 303.63"> <defs> <style> .cls-1 { opacity: 0.85; } .cls-2 { fill: #fff; } .cls-3 { fill: none; stroke: #555; stroke-linecap: round; stroke-linejoin: round; stroke-width: 7px; } </style> </defs> <g class="cls-1"> <rect class="cls-2" x="3" y="2.31" width="158" height="298" /> </g> <polyline class="cls-3" points="66 202.81 118 150.81 66 98.81" /> </svg>
+
+        </div>
+
+      </div>
+
+    <script id="${prefix}-slideshow-scripts">
+
+    var imageList = ${JSON.stringify(imageList)};
+    var preloadedImages = document.querySelector('#${prefix}-preloaded-images');
+    preloadedImages.innerHTML = '';
+    for ( [index,image] of imageList.entries() ) {
+      preloadedImages.innerHTML += '<img src="' + image + '" />';
+    }
+      
+    var ${prefix} = (function() {
+      var lightboxPopup = document.querySelector('#${prefix}-lightbox-wrapper');
+      var slideshowImage = document.querySelector('#${prefix}-slideshow-image');
+      var lightboxPopupButton = document.querySelector('#${prefix}-lightbox-popup-button');
+      var backgroundFade = document.querySelector('#${prefix}-lightbox-background-fade');
+      var closeButton = document.querySelector('#${prefix}-lightbox-close-button');
+      var imageList = ${JSON.stringify(imageList)};
+
+      var slideshowLeftArrowButton = document.querySelector('#${prefix}-slideshow-left-arrow-button');
+      var slideshowRightArrowButton = document.querySelector('#${prefix}-slideshow-right-arrow-button');
+
+      return {
+        init: function() {
+          slideshowImage.addEventListener('click', function() { ${prefix}.paginateRight() });
+          slideshowRightArrowButton.addEventListener('click', function() { ${prefix}.paginateRight() });
+          slideshowLeftArrowButton.addEventListener('click', function() { ${prefix}.paginateLeft() });
+          lightboxPopupButton.addEventListener('click', function() {
+            lightboxPopup.classList.toggle('${prefix}-show-lightbox-wrapper');
+          });
+          backgroundFade.addEventListener('mouseover', function() {
+            closeButton.classList.add('${prefix}-highlighted-close-button');
+          });
+          slideshowImage.addEventListener('mouseover', function() {
+            closeButton.classList.remove('${prefix}-highlighted-close-button');
+          });
+          closeButton.addEventListener('click', function() {
+            lightboxPopup.classList.toggle('${prefix}-show-lightbox-wrapper');
+          });
+          backgroundFade.addEventListener('click', function() {
+            lightboxPopup.classList.toggle('${prefix}-show-lightbox-wrapper');
+          });
+          window.addEventListener('keydown', function(event) {
+            if (event.keyCode == 27) {
+              lightboxPopup.classList.toggle('${prefix}-show-lightbox-wrapper');
+            }
+          });
+        },
+
+        paginateRight: function() {
+          currentImageNumber = slideshowImage.getAttribute('data-slide-number');
+          // if last slide go to first slide
+          if ( currentImageNumber == imageList.length - 1 ) {
+            slideshowImage.style.backgroundImage = "url(" + imageList[0] + ")";
+            slideshowImage.setAttribute('data-slide-number', 0);
+          } else {
+            slideshowImage.style.backgroundImage = "url(" + imageList[Number(currentImageNumber) + 1] + ")";
+            slideshowImage.setAttribute('data-slide-number', Number(currentImageNumber) + 1);
+          }
+        },
+
+        paginateLeft: function() {
+          currentImageNumber = slideshowImage.getAttribute('data-slide-number');
+          // if first slide go to last slide
+          if ( currentImageNumber == 0 ) {
+            slideshowImage.style.backgroundImage = "url(" + imageList[imageList.length - 1] + ")";
+            slideshowImage.setAttribute('data-slide-number', imageList.length - 1);
+          } else {
+            slideshowImage.style.backgroundImage = "url(" + imageList[Number(currentImageNumber) - 1] + ")";
+            slideshowImage.setAttribute('data-slide-number', Number(currentImageNumber) - 1);
+          }
+        }
+      };
+
+    })(); /* end ${prefix} */
+
+    ${prefix}.init();
+    <\/script>`;
+} /* end var basicWithLightbox */
+
+var basicWithThumbnailsAndLightbox = function(prefix,imageList) {
+  return `<style>
+  #${prefix}-lightbox-wrapper {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000000000;
+  }
+
+  .${prefix}-hide-lightbox-wrapper {
+    display: none;
+  }
+
+  .${prefix}-show-lightbox-wrapper {
+    display: block;
+  }
+
+  #${prefix}-lightbox-background-fade {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.85);
+    cursor: pointer;
+  }
+
+  #${prefix}-slideshow-outer-wrapper {
+    position: relative;
+    float: left;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%,-50%);
+    width: 85vw;
+    height: 85vh;
+  }
+
+  #${prefix}-slideshow-wrapper {
+    position: relative;
+    float: left;
+    width: 100%;
+    height: calc(100% - 101.25px);
+  }
+
+  #${prefix}-slideshow-wrapper h1 {
+    position: relative;
+    float: left;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,50%);
+    -webkit-transform: translate(-50%,-50%);
+    margin: 0;
+  }
+
+  #${prefix}-preloaded-images {
+    position: absolute;
+    height: 0;
+    overflow: hidden;
+  }
+  
+  #${prefix}-slideshow-image {
+    cursor: pointer;
+    position: relative;
+    float: left;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-image: url(${imageList[0]});
+  }
+
+  .${prefix}-slideshow-button {
+    z-index: 100;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    opacity: .9;
+    color: #444;
+    cursor: pointer;
+    font-size: 1.8rem;
+    font-weight: 900;
+    width: 45px;
+  }
+
+  .${prefix}-slideshow-button:hover {
+    opacity: 1;
+  }
+
+  .${prefix}-no-selection::selection {
+    background-color: transparent;
+  }
+
+  #${prefix}-slideshow-left-arrow-button {
+    left: -1px;
+  }
+
+  #${prefix}-slideshow-right-arrow-button {
+    right: -1px;
+  }
+
+  #${prefix}-thumbnails-wrapper {
+    position: relative;
+    float: left;
+    width: 100%;
+    height: 101.25px;
+    overflow-x: scroll;
+    background-color: #f9f9f9;
+  }
+
+  #${prefix}-thumbnails-inner-wrapper {
+    position: relative;
+    float: left;
+    height: 100%;
+  }
+
+  .${prefix}-slideshow-thumbnail {
+    position: relative;
+    float: left;
+    width: 180px;
+    height: 101.25px;
+    border-width: 0 4px 0 0;
+    border-style: solid;
+    border-color: #fff;
+    opacity: .9;
+    cursor: pointer;
+    transition: all .2s ease;
+    -webkit-transition: all .2s ease;
+    background-size: cover;
+    background-position: center;
+    box-sizing: border-box;
+  }
+
+  .${prefix}-slideshow-thumbnail:last-of-type {
+    border: none;
+  }
+
+  .${prefix}-slideshow-thumbnail:hover {
+    opacity: 1;
+  }
+
+  #${prefix}-lightbox-popup-button-wrapper {
+    position: relative;
+    float: left;
+    width: 100%;
+    text-align: center;
+  }
+
+  #${prefix}-lightbox-popup-button {
+    position: relative;
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0 25px;
+    margin: 20px 0;
+    line-height: 26px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: system-ui, sans-serif;
+    border: 2px solid #444;
+    background-color: #fff;
+    color: #444;
+    cursor: pointer;
+    transition: all .2s ease;
+    -webkit-transition: all .2s ease;
+  }
+
+  #${prefix}-lightbox-popup-button:hover {
+    background-color: #444;
+    color: #fff;
+  }
+
+  #${prefix}-lightbox-close-button {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    z-index: 1000;
+    cursor: pointer;
+    transition: all .4s ease;
+    -webkit-transition: all .4s ease;
+  }
+
+  .${prefix}-faded-close-button {
+    opacity: .3;
+  }
+
+  .${prefix}-highlighted-close-button {
+    opacity: 1;
+  }
+  </style>
+
+
+  <div id="${prefix}-lightbox-popup-button-wrapper">
+    <div id="${prefix}-lightbox-popup-button">lightbox button</div>
+  </div>
+
+  <div id="${prefix}-lightbox-wrapper" class="${prefix}-hide-lightbox-wrapper">
+    <div id="${prefix}-lightbox-background-fade"></div>
+
+    <!-- close lightbox button -->
+    <svg id="${prefix}-lightbox-close-button" class="${prefix}-faded-close-button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 377.19 373.73"> <defs> <style> .close-button-1 { fill: #fff; } .close-button-2 { fill: none; stroke: #444; stroke-linecap: round; stroke-miterlimit: 10; stroke-width: 10px; } </style> </defs> <circle class="close-button-1" cx="189.09" cy="186.37" r="179" /> <line class="close-button-2" x1="110.84" y1="108.37" x2="267.34" y2="264.87" /> <line class="close-button-2" x1="267.09" y1="108.37" x2="111.09" y2="264.37" /> </svg>
+
+    <div id="${prefix}-slideshow-outer-wrapper">
+      <div id="${prefix}-slideshow-wrapper">
+
+        <div id="${prefix}-preloaded-images"></div>
+        
+        <div id="${prefix}-slideshow-image" data-slide-number="0"></div>
+
+        <!-- left arrow button (SVG image) -->
+        <svg id="${prefix}-slideshow-left-arrow-button" class="${prefix}-slideshow-button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164 303.63"> <defs> <style> .cls-1 { opacity: 0.85; } .cls-2 { fill: #fff; } .cls-3 { fill: none; stroke: #555; stroke-linecap: round; stroke-linejoin: round; stroke-width: 7px; } </style> </defs> <g class="cls-1"> <rect class="cls-2" x="3" y="2.31" width="158" height="298" /> </g> <polyline class="cls-3" points="98 99.81 46 151.81 98 203.81" /> </svg>
+
+        <!-- right arrow button (SVG image) -->
+        <svg id="${prefix}-slideshow-right-arrow-button" class="${prefix}-slideshow-button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164 303.63"> <defs> <style> .cls-1 { opacity: 0.85; } .cls-2 { fill: #fff; } .cls-3 { fill: none; stroke: #555; stroke-linecap: round; stroke-linejoin: round; stroke-width: 7px; } </style> </defs> <g class="cls-1"> <rect class="cls-2" x="3" y="2.31" width="158" height="298" /> </g> <polyline class="cls-3" points="66 202.81 118 150.81 66 98.81" /> </svg>
+
+      </div>
+
+      <div id="${prefix}-thumbnails-wrapper">
+        <div id="${prefix}-thumbnails-inner-wrapper"></div>
+      </div>
+
+    </div><!-- end #${prefix}-slideshow-outer-wrapper -->
+  </div><!-- end #${prefix}-lightbox-wrapper -->
+
+  <script id="${prefix}-slideshow-scripts">
+
+  var imageList = ${JSON.stringify(imageList)};
+  var preloadedImages = document.querySelector('#${prefix}-preloaded-images');
+  preloadedImages.innerHTML = '';
+  for ( [index,image] of imageList.entries() ) {
+    preloadedImages.innerHTML += '<img src="' + image + '" />';
+  }
+    
+  var ${prefix} = (function() {
+    var slideshowImage = document.querySelector('#${prefix}-slideshow-image');
+    var lightboxPopup = document.querySelector('#${prefix}-lightbox-wrapper');
+    var lightboxPopupButton = document.querySelector('#${prefix}-lightbox-popup-button');
+    var backgroundFade = document.querySelector('#${prefix}-lightbox-background-fade');
+    var closeButton = document.querySelector('#${prefix}-lightbox-close-button');
+    var slideshowThumbnailsInnerWrapper = document.querySelector('#${prefix}-thumbnails-inner-wrapper');
+    var imageList = ${JSON.stringify(imageList)};
+
+    var generateThumbnail = function(index,image) {
+      return '<div class="${prefix}-slideshow-thumbnail" data-slide-number="' + index + '" style="background-image: url(' + image + ');"></div>'
+    }
+
+    slideshowThumbnailsInnerWrapper.style.width = (imageList.length * 180) + "px";
+
+    for ( [index,image] of imageList.entries() ) {
+      slideshowThumbnailsInnerWrapper.innerHTML += generateThumbnail(index,image);
+    }
+
+    var slideshowLeftArrowButton = document.querySelector('#${prefix}-slideshow-left-arrow-button');
+    var slideshowRightArrowButton = document.querySelector('#${prefix}-slideshow-right-arrow-button');
+
+    return {
+      init: function() {
+        slideshowImage.addEventListener('click', function() { ${prefix}.paginateRight() });
+
+        slideshowRightArrowButton.addEventListener('click', function() { ${prefix}.paginateRight() });
+
+        slideshowLeftArrowButton.addEventListener('click', function() { ${prefix}.paginateLeft() });
+
+        document.addEventListener('click', function(event) {
+          if ( event.target.matches('.${prefix}-slideshow-thumbnail') ) {
+            var imageNumber = event.target.getAttribute('data-slide-number');
+            ${prefix}.selectThumbnail(imageNumber);
+          }
+        });
+
+        lightboxPopupButton.addEventListener('click', function() {
+          lightboxPopup.classList.toggle('${prefix}-show-lightbox-wrapper');
+        });
+        backgroundFade.addEventListener('mouseover', function() {
+          closeButton.classList.add('${prefix}-highlighted-close-button');
+        });
+        slideshowImage.addEventListener('mouseover', function() {
+          closeButton.classList.remove('${prefix}-highlighted-close-button');
+        });
+        closeButton.addEventListener('click', function() {
+          lightboxPopup.classList.toggle('${prefix}-show-lightbox-wrapper');
+        });
+        backgroundFade.addEventListener('click', function() {
+          lightboxPopup.classList.toggle('${prefix}-show-lightbox-wrapper');
+        });
+        window.addEventListener('keydown', function(event) {
+          if (event.keyCode == 27) {
+            lightboxPopup.classList.toggle('${prefix}-show-lightbox-wrapper');
+          }
+        });
+      },
+
+      paginateRight: function() {
+        currentImageNumber = slideshowImage.getAttribute('data-slide-number');
+        // if last slide go to first slide
+        if ( currentImageNumber == imageList.length - 1 ) {
+          slideshowImage.style.backgroundImage = "url(" + imageList[0] + ")";
+          slideshowImage.setAttribute('data-slide-number', 0);
+        } else {
+          slideshowImage.style.backgroundImage = "url(" + imageList[Number(currentImageNumber) + 1] + ")";
+          slideshowImage.setAttribute('data-slide-number', Number(currentImageNumber) + 1);
+        }
+      },
+
+      paginateLeft: function() {
+        currentImageNumber = slideshowImage.getAttribute('data-slide-number');
+        // if first slide go to last slide
+        if ( currentImageNumber == 0 ) {
+          slideshowImage.style.backgroundImage = "url(" + imageList[imageList.length - 1] + ")";
+          slideshowImage.setAttribute('data-slide-number', imageList.length - 1);
+        } else {
+          slideshowImage.style.backgroundImage = "url(" + imageList[Number(currentImageNumber) - 1] + ")";
+          slideshowImage.setAttribute('data-slide-number', Number(currentImageNumber) - 1);
+        }
+      },
+
+      selectThumbnail: function(imageNumber) {
+        slideshowImage.style.backgroundImage = "url(" + imageList[Number(imageNumber)] + ")";
+        slideshowImage.setAttribute('data-slide-number', imageNumber);
+      }
+    };
+
+  })(); /* end ${prefix} */
+
+  ${prefix}.init();
+  <\/script>`;
+} /* end var basicWithThumbnailsAndLightbox */
+
+
+var basicLightboxWithHTMLImages = function(prefix,imageList) {
+  return `<style>
+    #${prefix}-lightbox-wrapper {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1000000000;
+    }
+
+    .${prefix}-hide-lightbox-wrapper {
+      display: none;
+    }
+
+    .${prefix}-show-lightbox-wrapper {
+      display: block;
+    }
+
+    #${prefix}-lightbox-background-fade {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.85);
+      cursor: pointer;
+      transition: all 1s ease;
+      -webkit-transition: all 1s ease;
+    }
+
+    #${prefix}-slideshow-wrapper {
+      position: relative;
+      float: left;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      -webkit-transform: translate(-50%,-50%);
+      z-index: 100;
+    }
+
+    #${prefix}-slideshow-wrapper h1 {
+      position: relative;
+      float: left;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,50%);
+      -webkit-transform: translate(-50%,-50%);
+      margin: 0;
+    }
+
+    #${prefix}-preloaded-images {
+      position: absolute;
+      height: 0;
+      overflow: hidden;
+    }
+    
+    #${prefix}-slideshow-image {
+      cursor: pointer;
+      position: relative;
+      float: left;
+      max-width: 85vw;
+      max-height: 85vh;
+      border: 3px solid #fff;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .${prefix}-slideshow-button {
+      z-index: 1000;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      -webkit-transform: translateY(-50%);
+      opacity: .9;
+      color: #444;
+      cursor: pointer;
+      font-size: 1.8rem;
+      font-weight: 900;
+      width: 45px;
+    }
+
+    .${prefix}-slideshow-button:hover {
+      opacity: 1;
+    }
+
+    .${prefix}-slideshow-button::selection {
+      background-color: transparent;
+    }
+
+    #${prefix}-slideshow-left-arrow-button {
+      left: 15px;
+    }
+
+    #${prefix}-slideshow-right-arrow-button {
+      right: 15px;
+    }
+
+    #${prefix}-lightbox-popup-button-wrapper {
+      position: relative;
+      float: left;
+      width: 100%;
+      text-align: center;
+    }
+
+    #${prefix}-lightbox-popup-button {
+      position: relative;
+      display: inline-block;
+      border-radius: 3px;
+      padding: 0 25px;
+      margin: 20px 0;
+      line-height: 26px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: system-ui, sans-serif;
+      border: 2px solid #444;
+      background-color: #fff;
+      color: #444;
+      cursor: pointer;
+      transition: all .2s ease;
+      -webkit-transition: all .2s ease;
+    }
+
+    #${prefix}-lightbox-popup-button:hover {
+      background-color: #444;
+      color: #fff;
+    }
+
+    img::selection {
+      background-color: transparent;
+    }
+
+    #${prefix}-lightbox-close-button {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      width: 40px;
+      z-index: 1000;
+      cursor: pointer;
+      transition: all .4s ease;
+      -webkit-transition: all .4s ease;
+    }
+
+    .${prefix}-faded-close-button {
+      opacity: .3;
+    }
+
+    .${prefix}-highlighted-close-button {
+      opacity: 1;
+    }
+    </style>
+
+    <div id="${prefix}-lightbox-popup-button-wrapper">
+      <div id="${prefix}-lightbox-popup-button">lightbox button</div>
+    </div>
+
+      <div id="${prefix}-lightbox-wrapper" class="${prefix}-hide-lightbox-wrapper">
+        <div id="${prefix}-lightbox-background-fade"></div>
+
+        <!-- close lightbox button -->
+        <svg id="${prefix}-lightbox-close-button" class="${prefix}-faded-close-button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 377.19 373.73"> <defs> <style> .close-button-1 { fill: #fff; } .close-button-2 { fill: none; stroke: #444; stroke-linecap: round; stroke-miterlimit: 10; stroke-width: 10px; } </style> </defs> <circle class="close-button-1" cx="189.09" cy="186.37" r="179" /> <line class="close-button-2" x1="110.84" y1="108.37" x2="267.34" y2="264.87" /> <line class="close-button-2" x1="267.09" y1="108.37" x2="111.09" y2="264.37" /> </svg>
+
+        <!-- left arrow button (SVG image) -->
+        <svg id="${prefix}-slideshow-left-arrow-button" class="${prefix}-slideshow-button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164 303.63"> <defs> <style> .${prefix}-left-arrow-1 { opacity: 0.85; } .${prefix}-left-arrow-2 { fill: #fff; } .${prefix}-left-arrow-3 { fill: none; stroke: #555; stroke-linecap: round; stroke-linejoin: round; stroke-width: 7px; } </style> </defs> <g class="${prefix}-left-arrow-1"> <rect class="${prefix}-left-arrow-2" x="3" y="2.31" width="158" height="298" /> </g> <polyline class="${prefix}-left-arrow-3" points="98 99.81 46 151.81 98 203.81" /> </svg>
+
+        <div id="${prefix}-slideshow-wrapper">
+
+          <div id="${prefix}-preloaded-images"></div>
+          
+          <img id="${prefix}-slideshow-image" data-slide-number="0" src="${imageList[0]}" />
+        </div>
+
+        <!-- right arrow button (SVG image) -->
+        <svg id="${prefix}-slideshow-right-arrow-button" class="${prefix}-slideshow-button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164 303.63"> <defs> <style> .${prefix}-right-arrow-1 { opacity: 0.85; } .${prefix}-right-arrow-2 { fill: #fff; } .${prefix}-right-arrow-3 { fill: none; stroke: #555; stroke-linecap: round; stroke-linejoin: round; stroke-width: 7px; } </style> </defs> <g class="${prefix}-right-arrow-1"> <rect class="${prefix}-right-arrow-2" x="3" y="2.31" width="158" height="298" /> </g> <polyline class="${prefix}-right-arrow-3" points="66 202.81 118 150.81 66 98.81" /> </svg>
+
+      </div>
+
+    <script id="${prefix}-slideshow-scripts">
+
+    var imageList = ${JSON.stringify(imageList)};
+    var preloadedImages = document.querySelector('#${prefix}-preloaded-images');
+    preloadedImages.innerHTML = '';
+    for ( [index,image] of imageList.entries() ) {
+      preloadedImages.innerHTML += '<img src="' + image + '" />';
+    }
+      
+    var ${prefix} = (function() {
+      var lightboxPopup = document.querySelector('#${prefix}-lightbox-wrapper');
+      var slideshowImage = document.querySelector('#${prefix}-slideshow-image');
+      var lightboxPopupButton = document.querySelector('#${prefix}-lightbox-popup-button');
+      var backgroundFade = document.querySelector('#${prefix}-lightbox-background-fade');
+      var leftArrowButton = document.querySelector('#${prefix}-slideshow-left-arrow-button');
+      var rightArrowButton = document.querySelector('#${prefix}-slideshow-right-arrow-button');
+      var closeButton = document.querySelector('#${prefix}-lightbox-close-button');
+      var imageList = ${JSON.stringify(imageList)};
+      var slideshowLeftArrowButton = document.querySelector('#${prefix}-slideshow-left-arrow-button');
+      var slideshowRightArrowButton = document.querySelector('#${prefix}-slideshow-right-arrow-button');
+
+      return {
+        init: function() {
+          slideshowImage.addEventListener('click', function() { ${prefix}.paginateRight() });
+          slideshowRightArrowButton.addEventListener('click', function() { ${prefix}.paginateRight() });
+          slideshowLeftArrowButton.addEventListener('click', function() { ${prefix}.paginateLeft() });
+          lightboxPopupButton.addEventListener('click', function() {
+            lightboxPopup.classList.toggle('${prefix}-show-lightbox-wrapper');
+          });
+          backgroundFade.addEventListener('mouseover', function() {
+            closeButton.classList.add('${prefix}-highlighted-close-button');
+          });
+          slideshowImage.addEventListener('mouseover', function() {
+            closeButton.classList.remove('${prefix}-highlighted-close-button');
+          });
+          leftArrowButton.addEventListener('mouseover', function() {
+            closeButton.classList.remove('${prefix}-highlighted-close-button');
+          });
+          rightArrowButton.addEventListener('mouseover', function() {
+            closeButton.classList.remove('${prefix}-highlighted-close-button');
+          });
+          closeButton.addEventListener('click', function() {
+            lightboxPopup.classList.toggle('${prefix}-show-lightbox-wrapper');
+          });
+          backgroundFade.addEventListener('click', function() {
+            lightboxPopup.classList.toggle('${prefix}-show-lightbox-wrapper');
+          });
+          window.addEventListener('keydown', function(event) {
+            if (event.keyCode == 27) {
+              lightboxPopup.classList.toggle('${prefix}-show-lightbox-wrapper');
+            }
+          });
+        },
+
+        paginateRight: function() {
+          currentImageNumber = slideshowImage.getAttribute('data-slide-number');
+          // if last slide go to first slide
+          if ( currentImageNumber == imageList.length - 1 ) {
+            slideshowImage.setAttribute('src', imageList[0]);
+            slideshowImage.setAttribute('data-slide-number', 0);
+          } else {
+            slideshowImage.setAttribute('src', imageList[Number(currentImageNumber) + 1]);
+            slideshowImage.setAttribute('data-slide-number', Number(currentImageNumber) + 1);
+          }
+        },
+
+        paginateLeft: function() {
+          currentImageNumber = slideshowImage.getAttribute('data-slide-number');
+          // if first slide go to last slide
+          if ( currentImageNumber == 0 ) {
+            slideshowImage.setAttribute('src', imageList[imageList.length - 1]);
+            slideshowImage.setAttribute('data-slide-number', imageList.length - 1);
+          } else {
+            slideshowImage.setAttribute('src', imageList[Number(currentImageNumber) - 1]);
+            slideshowImage.setAttribute('data-slide-number', Number(currentImageNumber) - 1);
+          }
+        }
+      };
+
+    })(); /* end ${prefix} */
+
+    ${prefix}.init();
+    <\/script>`;
+} /* end var basicLightboxWithHTMLImages */
+
+var slideshowType = 'basic';
+var slideshowImages = document.querySelector('#hu-slideshow-images');
+var slideshowCode = document.querySelector('#hu-slideshow-code');
+var slideshowPreview = document.querySelector('#slideshow-preview');
+var generateButton = document.querySelector('#hu-generate-button');
+var slideshowPrefixInput = document.querySelector('#hu-input-prefix');
+var slideshowTypeSelector = document.querySelector('#slideshow-type-selector');
+var generatorWrapper = document.querySelector('#generator-wrapper');
+var slideshowButtons = document.querySelector('#slideshow-buttons');
+
+
+document.addEventListener('click', function (event) {
+
+  if ( event.target.matches('.slideshow-button') ) {
+    var tabName = event.target.getAttribute('data-tab');
+    generatorWrapper.setAttribute('data-tab', tabName);
+    slideshowButtons.setAttribute('data-tab', tabName);
+  }
+
+}, false);
+
+
+/* update slideshow on type selection */
+slideshowTypeSelector.addEventListener('change', function() {
+
+  var slideshowType = slideshowTypeSelector.value;
+  updateSlideshow(slideshowType);
+
+}); /* end slideshowTypeSelector.addEventListener('change', function() */
+
+
+/* update slideshow on image list update */
+slideshowImages.addEventListener('keyup', function() {
+
+  var slideshowType = slideshowTypeSelector.value;
+  updateSlideshow(slideshowType);
+
+}); /* end slideshowImages.addEventListener('change', function() */
+
+
+
+
+var generateThumbnail = function(index,image) {
+  return `<div class="hu-slideshow-thumbnail" data-slide-number="${index}" style="background-image: url(${image});"></div>`
+}
+
+
+var updateSlideshow = function(slideshowType = 'basic') {
+  var prefix = 'slideshow' + Math.floor((Math.random() * 10000000000) + 1);
+  
+  var imageLinks = slideshowImages.value;
+  var imageList = imageLinks.replace(/[\s]+/g, " ");
+  imageList = imageList.split(" ").filter(Boolean);
+  var generatorTypes = {
+    "basic": basic(prefix,imageList),
+    "basic-with-lightbox": basicWithLightbox(prefix,imageList),
+    "basic-with-thumbnails": basicWithThumbnails(prefix,imageList),
+    "basic-with-thumbnails-and-lightbox": basicWithThumbnailsAndLightbox(prefix,imageList),
+    "basic-lightbox-with-html-images": basicLightboxWithHTMLImages(prefix,imageList),
+  }
+  var code = generatorTypes[slideshowType];
+  slideshowCode.innerHTML = code;
+  slideshowPreview.innerHTML = code;
+  var slideshowScripts = document.querySelector(`#${prefix}-slideshow-scripts`);
+  eval(slideshowScripts.innerHTML);
+  
+  if ( slideshowType.includes('lightbox') ) {
+    var lightboxButton = document.querySelector('#' + prefix + '-lightbox-popup-button');
+    lightboxButton.click();
+  }
+};
+
+
+window.addEventListener('load', function() {
+  slideshowImages.innerHTML.replace(/[\s]+/g, "");
+  updateSlideshow();
+});
+</script>
+
+</body>
+</html>
